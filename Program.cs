@@ -16,6 +16,8 @@ class Program
         }
         else
         {
+            // if json doesnt exist, open csv file, parse and create a database class
+            // then serialise that class for future uses
             db = new Database("JC-202510-citibike-tripdata.csv");
             
             var options = new JsonSerializerOptions
@@ -27,18 +29,10 @@ class Program
             
         }
         
-         
-        
         
         db.RunQueries();
-        PressEnterToContinue();
         
     }
     
-    private  static void PressEnterToContinue()
-    {
-        Console.WriteLine("Press ENTER key to continue...");
-        Console.ReadLine();
-    }
 }
 
