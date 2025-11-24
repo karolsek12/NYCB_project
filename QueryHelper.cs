@@ -8,12 +8,11 @@ namespace NYCB_Project
 {
     static class QueryHelper
     {
-        public static double getEuclideanDist((double?, double?) x, (double?, double?) y)
+        public static double getEuclideanDist(dynamic x , dynamic y) 
         {
-            (double, double) xc = ((double, double))x;
-            (double, double) yc = ((double, double))y;
+            //anonymous types used in linq complicate this a bit
 
-            return Math.Sqrt(Math.Pow(xc.Item1 - yc.Item1,2)+ Math.Pow(xc.Item2 - yc.Item2,2));
+            return Math.Sqrt(Math.Pow(x.Item1 - y.Item1,2)+ Math.Pow(x.Item2 - y.Item2,2));
         }
     }
 }

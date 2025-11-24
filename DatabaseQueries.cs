@@ -49,7 +49,7 @@ namespace NYCB_Project
                             Console.Clear();
                             return;
                         }
-                    break;
+                        break;
                 }
                 
                 Console.Clear();
