@@ -9,20 +9,23 @@ namespace NYCB_Project
 {
     static class ParsingHelper
     {
-        public static string TrimQuotations(string s)
+    
+        public static string TrimQuotations(string s) // values in the csv file are surrounded by " "
         {
+            // this function is used for values that are guaranteed to be not empty
             return s.Trim('"');
         }
 
-        public static string? TrimQuotationsOrNull(string s)
+        public static string? TrimQuotationsOrNull(string s) // values in the csv file are surrounded by " "
         {
+            // this function is used for values that can be empty, if so, null is returned
             if (string.IsNullOrEmpty(s))
                 return null;
 
             return s.Trim('"');
         }
 
-        public static RideableType getRideableType(string s)
+        public static RideableType getRideableType(string s) // parsing the string into a nice enum
         {
             switch (s)
             {
@@ -33,11 +36,11 @@ namespace NYCB_Project
                     return RideableType.Classic;
 
                 default:
-                    throw new Exception("Unknown rideable type\n");
+                    throw new Exception("Unknown rideable type\n"); 
             }
         }
 
-        public static DateTime getDateTime(string s)
+        public static DateTime getDateTime(string s) // parsing time
         {
             DateTime dt;
             char[] toSplit = { '"', ' ', '-', ':', '.' };
@@ -56,7 +59,7 @@ namespace NYCB_Project
             return dt;
         }
 
-        public static TripType getTripType(string s)
+        public static TripType getTripType(string s) // parsing the string into a nice enum
         {
             switch (s)
             {
@@ -70,9 +73,8 @@ namespace NYCB_Project
                     throw new Exception("Unknown trip type\n");
             }
         }
-        public static double? getDoubleOrNull(string a)
+        public static double? getDoubleOrNull(string a) // parsing a value into a double
         {
-
             if (string.IsNullOrEmpty(a))
                 return null;
 

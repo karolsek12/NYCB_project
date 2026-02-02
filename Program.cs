@@ -10,7 +10,7 @@ class Program
     {
         Database db;
         
-        if (File.Exists("Database.json")) //parsing json seems to be faster. I think???
+        if (File.Exists("Database.json")) //parsing json seems to be a bit faster
         {
             db = JsonSerializer.Deserialize<Database>(File.ReadAllText("Database.json"))!;
         }

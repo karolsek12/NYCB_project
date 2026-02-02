@@ -9,19 +9,19 @@ public class Database
     public List<Trip> Trips;
     public List<Station> Stations;
     
-    public List<Trip> TripsProp
+    public List<Trip> TripsProp // property set up for json
     {
         get => Trips;
         set => Trips = value;
     }
-    public List<Station> StationsProp
+    public List<Station> StationsProp // property set up for json
     {
         get => Stations;
         set => Stations = value;
     }
     
 
-    public Database(string a) : this()
+    public Database(string a) : this() // a - path of csv file to read
     {
         InitDb(a);
     }
@@ -48,45 +48,45 @@ public class Database
 
         foreach (string line in lines)
         {
-            if (!firstRead)
+            if (!firstRead) // first line of a csv file includes names of the fields, this is not needed
             {
                 firstRead = true;
                 continue;
             }
-            var vals = line.Split(toSplit);
+            var vals = line.Split(toSplit); // getting all the values as string
             
-            tr = new Trip(
-                ParsingHelper.TrimQuotations(vals[0]), 
-                ParsingHelper.getRideableType(vals[1]),
-                ParsingHelper.getDateTime(vals[2]), 
-                ParsingHelper.getDateTime(vals[3]),
-                ParsingHelper.TrimQuotationsOrNull(vals[5]),
-                ParsingHelper.TrimQuotationsOrNull(vals[7]),
-                ParsingHelper.getTripType(vals[12])
+            tr = new Trip( // parsing all the values related to the trip
+                ParsingHelper.TrimQuotations(vals[0]), // id of the ride
+                ParsingHelper.getRideableType(vals[1]), // type of the ride either classic or electric
+                ParsingHelper.getDateTime(vals[2]), // trip start time
+                ParsingHelper.getDateTime(vals[3]), // trip end time
+                ParsingHelper.TrimQuotationsOrNull(vals[5]), // id of the start station
+                ParsingHelper.TrimQuotationsOrNull(vals[7]), // id of the end station
+                ParsingHelper.getTripType(vals[12]) // whether the ride was "casual" or "member"
                 );
             
             Trips.Add(tr);
 
-            st = new Station(
-                ParsingHelper.TrimQuotationsOrNull(vals[5]),
-                ParsingHelper.TrimQuotationsOrNull(vals[4]),
-                ParsingHelper.getDoubleOrNull(vals[8]),
-                ParsingHelper.getDoubleOrNull(vals[9])
+            st = new Station( // parsing the values related to the start station
+                ParsingHelper.TrimQuotationsOrNull(vals[5]), //id of the station
+                ParsingHelper.TrimQuotationsOrNull(vals[4]), //name of the station
+                ParsingHelper.getDoubleOrNull(vals[8]), // latitude of the station
+                ParsingHelper.getDoubleOrNull(vals[9]) // longitude of the station
             );
             
             Stations.Add(st);
             
-            st = new Station(
-                ParsingHelper.TrimQuotationsOrNull(vals[7]),
-                ParsingHelper.TrimQuotationsOrNull(vals[6]),
-                ParsingHelper.getDoubleOrNull(vals[10]),
-                ParsingHelper.getDoubleOrNull(vals[11])
+            st = new Station( // parsing the values related to the end station
+                ParsingHelper.TrimQuotationsOrNull(vals[7]), // id of the station
+                ParsingHelper.TrimQuotationsOrNull(vals[6]), // name of the station
+                ParsingHelper.getDoubleOrNull(vals[10]), // latitude of the station
+                ParsingHelper.getDoubleOrNull(vals[11]) // longitude of the station
             );
             
             Stations.Add(st);
 
         }
-        Stations = Stations.Distinct().ToList();
+        Stations = Stations.Distinct().ToList(); // of course some stations will repeat, distinct is used
         
     }
     

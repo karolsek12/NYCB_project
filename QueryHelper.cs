@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,28 @@ namespace NYCB_Project
 {
     static class QueryHelper
     {
-        public static double getEuclideanDist(dynamic x , dynamic y) 
+
+        public static double Haversine(double x)
+        {
+
+            return (1 - Math.Cos(x)) / 2;
+        }
+
+        public static double GetGreatCircleDist(dynamic x, dynamic y)
         {
             //anonymous types used in linq complicate this a bit
+            double R = 6371; //earth radius in kilometers
+            double lonDiff = x.Item1 - y.Item1;
+            double latDiff = x.Item2 - y.Item2;
 
-            return Math.Sqrt(Math.Pow(x.Item1 - y.Item1,2)+ Math.Pow(x.Item2 - y.Item2,2));
+            lonDiff *= Math.PI / 180;
+            latDiff *= Math.PI / 180;
+
+            double havTheta = Haversine(latDiff) + Math.Cos(x.Item2) * Math.Cos(y.Item2) * Haversine(lonDiff);
+
+            double theta = 2 * Math.Asin(Math.Sqrt(havTheta));
+
+            return R * theta;
         }
     }
 }
