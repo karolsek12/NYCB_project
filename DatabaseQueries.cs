@@ -10,7 +10,7 @@ namespace NYCB_Project
 {
     static class DatabaseQueries
     {
-        public static void RunQueries(this Database db)
+        public static void RunQueries(this Database db) // elegant interface
         {
             List<string> queries = new List<string>{
                 "Stations with no ID",
@@ -91,8 +91,8 @@ namespace NYCB_Project
             var stations = db.Stations;
 
             var queryResult = trips
-                .Where(t => t.startStationId != null && t.endStationId != null)
-                .Join(stations, t => t.startStationId, s => s.StationId, (t, s) => new
+                .Where(t => t.startStationId != null && t.endStationId != null) // removing trips with no station id
+                .Join(stations, t => t.startStationId, s => s.StationId, (t, s) => new //joining with stations
                 {
                     t.rideId,
                     t.startStationId,
@@ -100,7 +100,7 @@ namespace NYCB_Project
                     start_position = (s.Latitude, s.Longitude),
                     t.endStationId,
                 })
-                .Join(stations, t => t.endStationId, s => s.StationId, (t, s) => new
+                .Join(stations, t => t.endStationId, s => s.StationId, (t, s) => new //once again joining with stations to get end position
                 {
                     t.rideId,
                     t.startStationId,
@@ -111,14 +111,14 @@ namespace NYCB_Project
                     end_position = (s.Latitude, s.Longitude)
                 })
                 .Where(v => v.start_position.Latitude != null && v.start_position.Longitude != null &&
-                v.end_position.Latitude != null && v.end_position.Longitude != null)
+                v.end_position.Latitude != null && v.end_position.Longitude != null) // removing trips with unkown start/end positions
                 .Select(v => new
                 {
                     trip_data = v,
                     trip_length = QueryHelper.GetGreatCircleDist(v.start_position, v.end_position)
                 })
                 .OrderByDescending(v => v.trip_length)
-                .Select(v => new
+                .Select(v => new //cleaning up for display
                 {
                     v.trip_data.rideId,
                     v.trip_data.startStationId,
@@ -127,7 +127,7 @@ namespace NYCB_Project
                     v.trip_data.endStationId,
                     v.trip_data.ene_station_name,
                     end_position = new { v.trip_data.end_position.Latitude, v.trip_data.end_position.Longitude },
-                    v.trip_length
+                    trip_length_km = v.trip_length
                 })
                 .Take(5)
                 .ToList();
@@ -143,19 +143,19 @@ namespace NYCB_Project
             var stations = db.Stations;
 
             var queryResult = stations
-                .Where(s => s.StationId != null)
-                .GroupJoin(trips, s => s.StationId, t => t.startStationId, (s, t) => new
+                .Where(s => s.StationId != null) // removing stations with no id
+                .GroupJoin(trips, s => s.StationId, t => t.startStationId, (s, t) => new // counting amount of trips starting in a station
                 {
                     s,
                     count = t.Count()
                 })
-                .GroupJoin(trips, s => s.s.StationId, t => t.endStationId, (s, t) => new
+                .GroupJoin(trips, s => s.s.StationId, t => t.endStationId, (s, t) => new // counting amount of trips ending in a station
                 {
                     s.s,
                     start_count = s.count,
                     end_count = t.Count()
                 })
-                .Where(v => v.end_count != 0)
+                .Where(v => v.end_count != 0) // making sure not to divide by 0
                 .Select(v => new
                 {
                     station = v.s,
@@ -180,7 +180,7 @@ namespace NYCB_Project
             var stations = db.Stations;
 
             var queryResult = trips
-                .Where(t => t.startedAt.Day != t.endedAt.Day)
+                .Where(t => t.startedAt.Day != t.endedAt.Day) // date is saved as the Datetime class, so isolating the day is easy
                 .ToList();
 
 
@@ -198,13 +198,13 @@ namespace NYCB_Project
                 .Select(t => new
                 {
                     t,
-                    time = t.endedAt.Ticks - t.startedAt.Ticks,
+                    time = t.endedAt.Ticks - t.startedAt.Ticks, // measuring in ticks gives the best precision
                 })
                 .GroupBy(v => v.t.rideableType, v => v.time)
                 .Select(v => new
                 {
                     ride_type = v.Key,
-                    average_min = (double)v.Average(x => x) / (10_000_000) / 60
+                    average_trip_duration_h = (double)v.Average(x => x) / (10_000_000) / 60 // diving by 10000000 * 60 to get the duration in hours
                 })
                 .ToList();
 

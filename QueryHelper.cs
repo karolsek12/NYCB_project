@@ -10,13 +10,13 @@ namespace NYCB_Project
     static class QueryHelper
     {
 
-        public static double Haversine(double x)
+        public static double Haversine(double x) // calculating haversine(x)
         {
 
             return (1 - Math.Cos(x)) / 2;
         }
 
-        public static double GetGreatCircleDist(dynamic x, dynamic y)
+        public static double GetGreatCircleDist(dynamic x, dynamic y) //calculating great circle distance, used in a query
         {
             //anonymous types used in linq complicate this a bit
             double R = 6371; //earth radius in kilometers
